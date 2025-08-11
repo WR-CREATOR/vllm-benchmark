@@ -10,6 +10,7 @@ This repository contains scripts for benchmarking the performance of large langu
   - Latency
   - Tokens per second
   - Time to first token
+  - New:Output token throughput (tok/s)
 - Easy to run with customizable parameters
 - Generates JSON output for further analysis or visualization
 
