@@ -128,7 +128,7 @@ async def make_request(client, output_tokens, request_timeout, use_long_context)
 
     try:
         stream = await client.chat.completions.create(
-            model="NousResearch/Meta-Llama-3.1-8B-Instruct",
+            model="autodl-tmp/qwen3-8b",
             messages=[
                 {"role": "user", "content": content}
             ],
@@ -216,6 +216,8 @@ async def run_benchmark(num_requests, concurrency, request_timeout, output_token
     latency_percentiles = [calculate_percentile(latencies, p) for p in percentiles]
     tps_percentiles = [calculate_percentile(tokens_per_second_list, p, reverse=True) for p in percentiles]
     ttft_percentiles = [calculate_percentile(ttft_list, p) for p in percentiles]
+
+    Output_token_throughput =total_tokens / total_elapsed_time if total_elapsed_time > 0 else 0
     
     return {
         "total_requests": num_requests,
@@ -225,6 +227,7 @@ async def run_benchmark(num_requests, concurrency, request_timeout, output_token
         "max_output_tokens": output_tokens,
         "use_long_context": use_long_context,
         "total_time": total_elapsed_time,
+        "Output token throughput (tok/s)": Output_token_throughput,
         "requests_per_second": requests_per_second,
         "total_output_tokens": total_tokens,
         "latency": {
