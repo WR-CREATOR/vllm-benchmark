@@ -7,9 +7,11 @@ from vllm_benchmark import run_benchmark
 async def run_all_benchmarks(vllm_url, api_key, use_long_context):
     configurations = [
         {"num_requests": 10, "concurrency": 1, "output_tokens": 100},
-        {"num_requests": 100, "concurrency": 10, "output_tokens": 100},
-        {"num_requests": 500, "concurrency": 50, "output_tokens": 100},
-        {"num_requests": 1000, "concurrency": 100, "output_tokens": 100},
+        {"num_requests": 100, "concurrency": 50, "output_tokens": 100},
+        {"num_requests": 200, "concurrency": 100, "output_tokens": 100},
+        {"num_requests": 1000, "concurrency": 500, "output_tokens": 100},
+        {"num_requests": 2000, "concurrency": 1000, "output_tokens": 100},
+        # {"num_requests": 3000, "concurrency": 1000, "output_tokens": 200},
     ]
 
     all_results = []
