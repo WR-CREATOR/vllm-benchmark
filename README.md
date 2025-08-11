@@ -23,7 +23,7 @@ This repository contains scripts for benchmarking the performance of large langu
 
 1. Clone this repository:
    ```
-   git clone https://github.com/yourusername/vllm-benchmark.git
+   git clone https://github.com/WR-CREATOR/vllm-benchmark.git
    cd vllm-benchmark
    ```
 
