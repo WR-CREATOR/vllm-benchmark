@@ -74,7 +74,7 @@ The benchmark results are saved in JSON format, containing detailed metrics for 
 
 ## Results
 
-Please see the results directory for benchmarks on [Backprop](https://backprop.co) instances.
+Please see the results directory for benchmarks on benchmark_results.json.
 
 ## Contributing
 
