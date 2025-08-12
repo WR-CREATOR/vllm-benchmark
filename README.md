@@ -10,7 +10,8 @@ This repository contains scripts for benchmarking the performance of large langu
   - Latency
   - Tokens per second
   - Time to first token
-  - New:Output token throughput (tok/s)
+  - New: Output token throughput (tok/s)
+  - New: model_name parser
 - Easy to run with customizable parameters
 - Generates JSON output for further analysis or visualization
 
@@ -40,7 +41,7 @@ This repository contains scripts for benchmarking the performance of large langu
 To run a single benchmark:
 
 ```
-python vllm_benchmark.py --num_requests 100 --concurrency 10 --output_tokens 100 --vllm_url "http://localhost:8000/v1" --api_key "your-api-key"
+python vllm_benchmark.py --num_requests 100 --concurrency 10 --output_tokens 100 --vllm_url "http://localhost:8000/v1" --api_key "your-api-key" --model_name "your-model-name"
 ```
 
 Parameters:
@@ -56,7 +57,7 @@ Parameters:
 To run multiple benchmarks with different concurrency levels:
 
 ```
-python run_benchmarks.py --vllm_url "http://localhost:8000/v1" --api_key "your-api-key"
+python run_benchmarks.py --vllm_url "http://localhost:8000/v1" --api_key "your-api-key" --model_name "your-model-name"
 ```
 
 This script will run benchmarks with concurrency levels of 1, 10, 50, and 100, and save the results to `benchmark_results.json`.
