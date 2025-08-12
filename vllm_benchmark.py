@@ -118,7 +118,7 @@ async def process_stream(stream):
             break
     return first_token_time, total_tokens
 
-async def make_request(client, output_tokens, request_timeout, use_long_context):
+async def make_request(client, output_tokens, request_timeout, use_long_context, model_name):
     start_time = time.time()
     if use_long_context:
         prompt_pair = random.choice(LONG_PROMPT_PAIRS)
@@ -128,7 +128,7 @@ async def make_request(client, output_tokens, request_timeout, use_long_context)
 
     try:
         stream = await client.chat.completions.create(
-            model="autodl-tmp/qwen3-8b",
+            model= model_name,
             messages=[
                 {"role": "user", "content": content}
             ],
@@ -150,7 +150,7 @@ async def make_request(client, output_tokens, request_timeout, use_long_context)
         logging.error(f"Error during request: {str(e)}")
         return None
 
-async def worker(client, semaphore, queue, results, output_tokens, request_timeout, use_long_context):
+async def worker(client, semaphore, queue, results, output_tokens, request_timeout, use_long_context, model_name):
     while True:
         async with semaphore:
             task_id = await queue.get()
@@ -158,7 +158,7 @@ async def worker(client, semaphore, queue, results, output_tokens, request_timeo
                 queue.task_done()
                 break
             logging.info(f"Starting request {task_id}")
-            result = await make_request(client, output_tokens, request_timeout, use_long_context)
+            result = await make_request(client, output_tokens, request_timeout, use_long_context, model_name)
             if result:
                 results.append(result)
             else:
@@ -173,7 +173,7 @@ def calculate_percentile(values, percentile, reverse=False):
         return np.percentile(values, 100 - percentile)
     return np.percentile(values, percentile)
 
-async def run_benchmark(num_requests, concurrency, request_timeout, output_tokens, vllm_url, api_key, use_long_context):
+async def run_benchmark(num_requests, concurrency, request_timeout, output_tokens, vllm_url, api_key, use_long_context,model_name):
     client = AsyncOpenAI(base_url=vllm_url, api_key=api_key)
     semaphore = asyncio.Semaphore(concurrency)
     queue = asyncio.Queue()
@@ -188,7 +188,7 @@ async def run_benchmark(num_requests, concurrency, request_timeout, output_token
         await queue.put(None)
 
     # Create worker tasks
-    workers = [asyncio.create_task(worker(client, semaphore, queue, results, output_tokens, request_timeout, use_long_context)) for _ in range(concurrency)]
+    workers = [asyncio.create_task(worker(client, semaphore, queue, results, output_tokens, request_timeout, use_long_context,model_name)) for _ in range(concurrency)]
 
     start_time = time.time()
     
@@ -262,9 +262,10 @@ if __name__ == "__main__":
     parser.add_argument("--vllm_url", type=str, required=True, help="URL of the vLLM server")
     parser.add_argument("--api_key", type=str, required=True, help="API key for vLLM server")
     parser.add_argument("--use_long_context", action="store_true", help="Use long context prompt pairs instead of short prompts")
+    parser.add_argument("--model_name", type=str, default="Qwen3-32B", help="Model Name")
     args = parser.parse_args()
 
-    results = asyncio.run(run_benchmark(args.num_requests, args.concurrency, args.request_timeout, args.output_tokens, args.vllm_url, args.api_key, args.use_long_context))
+    results = asyncio.run(run_benchmark(args.num_requests, args.concurrency, args.request_timeout, args.output_tokens, args.vllm_url, args.api_key, args.use_long_context,args.model_name))
     print_results(results)
 else:
     # When imported as a module, provide the run_benchmark function
